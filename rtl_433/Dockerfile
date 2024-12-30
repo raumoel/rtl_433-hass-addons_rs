@@ -9,6 +9,7 @@ RUN apk add --no-cache --virtual .buildDeps \
     build-base \
     libusb-dev \
     librtlsdr-dev \
+    openssl-dev \
     cmake \
     git
 
@@ -21,7 +22,7 @@ WORKDIR ./rtl_433
 ARG rtl433GitRevision=23.11
 RUN git checkout ${rtl433GitRevision}
 WORKDIR ./build
-RUN cmake ..
+RUN cmake -DENABLE_OPENSSL=ON ..
 RUN make -j 4
 
 WORKDIR /build/root
@@ -34,6 +35,7 @@ ENV LANG C.UTF-8
 
 RUN apk add --no-cache libusb \
     librtlsdr \
+    openssl \
     sed
 WORKDIR /root
 COPY --from=builder /build/root/ /
